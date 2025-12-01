@@ -8,6 +8,15 @@ import (
 	"os"
 )
 
+type Artist struct {
+	ID           int      `json:"id"`
+	Image        string   `json:"image"`
+	Name         string   `json:"name"`
+	Members      []string `json:"members"`
+	CreationDate int      `json:"creationDate"`
+	FirstAlbum   string   `json:"firstAlbum"`
+}
+
 func createjson(link string, name string) {
 	str := readsite(link)
 	os.WriteFile(name, str, 0644) // écrit un nouveau fichier, argument(nom du fichier, texte (en byte), permission)
@@ -26,17 +35,20 @@ func readsite(link string) []byte {
 	return body
 }
 
-func table(link string) { // transforme le link en dico, puis l'affiche (sur la console) note: servira pour mettre en tableau sur le site
-	x := readsite(link)
-	var m map[string]interface{}
+func table(link string, n int, w http.ResponseWriter) { // args: link de l'api, la page et le serveur
+	var x []byte
+	if n == -1 {
+		x = readsite(link)
+	} else {
+		x = readsite(link + fmt.Sprint(n))
+	}
+	var m Artist
 	err := json.Unmarshal(x, &m) // ces deux ligne permettent de transfomer le byte (var x) en dictionnaire (stocké dans m)
 	if err != nil {
 		fmt.Print("lmao ERROR", err)
 	}
-	for _, str := range m {
-		fmt.Println(str)
-	}
-	fmt.Println("da name:", m["name"]) // print la valeur qui a la clé name
+	fmt.Fprintf(w, "%d | %s | %d | %s\n",
+		m.ID, m.Name, m.CreationDate, m.FirstAlbum)
 }
 
 func main() {
@@ -44,7 +56,16 @@ func main() {
 		if r.URL.Path != "/" {
 			return // permet de pas avoir la requette plusieurs fois (sera probablement à retirer à la fin)
 		}
-		table("https://groupietrackers.herokuapp.com/api/artists/1")
+		a := 0
+		for a < 53 {
+			if a == 0 {
+				fmt.Fprintf(w, "%s | %s | %s | %s\n",
+					"ID", "Name", "Creation date", "First album")
+			} else {
+				table("https://groupietrackers.herokuapp.com/api/artists/", a, w)
+			}
+			a += 1
+		}
 	})
 	fmt.Println("Serveur démarré sur le port 8080...")
 	http.ListenAndServe(":8080", nil)
