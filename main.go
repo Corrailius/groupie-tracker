@@ -66,7 +66,7 @@ func tri(option string) {
 		for i := 1; i < len(data); i += 1 {
 			for j := i; j > 0; j -= 1 {
 				if data[j].Name < data[j-1].Name {
-					data[j].Name, data[j-1].Name = data[j-1].Name, data[j].Name
+					data[j], data[j-1] = data[j-1], data[j]
 				} else {
 					j = -1
 				}
