@@ -17,6 +17,8 @@ type Artist struct {
 	FirstAlbum   string   `json:"firstAlbum"`
 }
 
+var data []Artist
+
 func createjson(link string, name string) {
 	str := readsite(link)
 	os.WriteFile(name, str, 0644) // écrit un nouveau fichier, argument(nom du fichier, texte (en byte), permission)
@@ -35,7 +37,7 @@ func readsite(link string) []byte {
 	return body
 }
 
-func table(link string, n int, w http.ResponseWriter) { // args: link de l'api, la page et le serveur
+func table(link string, n int, w http.ResponseWriter) { // args: link de l'api, la page et le serveur, l'ajoute à la variable globale data
 	var x []byte
 	if n == -1 {
 		x = readsite(link)
@@ -47,8 +49,30 @@ func table(link string, n int, w http.ResponseWriter) { // args: link de l'api, 
 	if err != nil {
 		fmt.Print("lmao ERROR", err)
 	}
-	fmt.Fprintf(w, "%d | %s | %d | %s\n",
-		m.ID, m.Name, m.CreationDate, m.FirstAlbum)
+	//fmt.Fprintf(w, "%d | %s | %d | %s\n",
+	// m.ID, m.Name, m.CreationDate, m.FirstAlbum)		create a tab on the website
+	data = append(data, m)
+}
+
+func printdata(w http.ResponseWriter) { // args: link de l'api, la page et le serveur, l'ajoute à la variable globale data
+	for i := 0; i < len(data); i += 1 {
+		fmt.Fprintf(w, "%d | %s | %d | %s\n",
+			data[i].ID, data[i].Name, data[i].CreationDate, data[i].FirstAlbum) //create a tab on the website
+	}
+}
+
+func tri(option string) {
+	if option == "alpha" {
+		for i := 1; i < len(data); i += 1 {
+			for j := i; j > 0; j -= 1 {
+				if data[j].Name < data[j-1].Name {
+					data[j].Name, data[j-1].Name = data[j-1].Name, data[j].Name
+				} else {
+					j = -1
+				}
+			}
+		}
+	}
 }
 
 func main() {
@@ -66,6 +90,9 @@ func main() {
 			}
 			a += 1
 		}
+		tri("alpha")
+		fmt.Print(len(data))
+		printdata(w)
 	})
 	fmt.Println("Serveur démarré sur le port 8080...")
 	http.ListenAndServe(":8080", nil)
