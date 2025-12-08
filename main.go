@@ -80,6 +80,7 @@ func main() {
 		if r.URL.Path != "/" {
 			return // permet de pas avoir la requette plusieurs fois (sera probablement à retirer à la fin)
 		}
+		data = []Artist{}
 		a := 0
 		for a < 53 {
 			if a == 0 {
