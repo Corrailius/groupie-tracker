@@ -76,25 +76,18 @@ func tri(option string) {
 }
 
 func main() {
+	http.Get("https://groupietrackers.herokuapp.com/api/artists")
+	// Sert tout fichier présent dans le dossier courant
+	fs := http.FileServer(http.Dir("."))
+
+	// Sert le CSS
+	http.Handle("/page-Style.css", fs)
+
+	// Sert la page HTML principale
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" {
-			return // permet de pas avoir la requette plusieurs fois (sera probablement à retirer à la fin)
-		}
-		data = []Artist{}
-		a := 0
-		for a < 53 {
-			if a == 0 {
-				fmt.Fprintf(w, "%s | %s | %s | %s\n",
-					"ID", "Name", "Creation date", "First album")
-			} else {
-				table("https://groupietrackers.herokuapp.com/api/artists/", a, w)
-			}
-			a += 1
-		}
-		tri("alpha")
-		fmt.Print(len(data))
-		printdata(w)
+		http.ServeFile(w, r, "page-web.html")
 	})
+
 	fmt.Println("Serveur démarré sur le port 8080...")
 	http.ListenAndServe(":8080", nil)
 }
