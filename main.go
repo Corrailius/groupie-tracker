@@ -54,6 +54,7 @@ func table(link string, n int, w http.ResponseWriter) { // args: link de l'api, 
 
 	//fmt.Fprintf(w, "%d | %s | %d | %s\n",
 	// m.ID, m.Name, m.CreationDate, m.FirstAlbum)		create a tab on the website
+	data = append(data, m)
 }
 
 func printdata(w http.ResponseWriter) { // args: link de l'api, la page et le serveur, l'ajoute à la variable globale data
