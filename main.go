@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strconv"
 	"sort"
+	"strconv"
 )
 
 type Artist struct {
@@ -180,23 +180,5 @@ func main() {
 	})
 
 	fmt.Println("Serveur démarré sur http://localhost:8080")
-		if r.URL.Path != "/" {
-			return // permet de pas avoir la requette plusieurs fois (sera probablement à retirer à la fin)
-		}
-		data = []Artist{}
-		a := 0
-		for a < 53 {
-			if a == 0 {
-				fmt.Fprintf(w, "%s | %s | %s | %s\n",
-					"ID", "Name", "Creation date", "First album")
-			} else {
-				table("https://groupietrackers.herokuapp.com/api/artists/", a, w)
-			}
-			a += 1
-		}
-		tri("birthday")
-		printdata(w)
-	})
-	fmt.Println("Serveur démarré sur le port 8080...")
 	http.ListenAndServe(":8080", nil)
 }
