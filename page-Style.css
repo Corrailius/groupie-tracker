@@ -48,6 +48,50 @@ header {
   padding: 20px;
 }
 
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background: #333;
+}
+
+.menu li {
+  position: relative;
+}
+
+.menu a {
+  display: block;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  background: #555;
+}
+
+.dropdown-menu {
+  list-style: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #444;
+  padding: 0;
+  margin: 0;
+  min-width: 160px;
+
+  display: none;
+}
+
+.dropdown-menu li a {
+  padding: 12px 15px;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 .fakeimg {
   background-color: #aaa;
   width: 100%;
