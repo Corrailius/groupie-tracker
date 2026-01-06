@@ -18,14 +18,14 @@ type Artisttest struct {
 	FirstAlbum   string   `json:"firstAlbum"`
 }
 
-func maintest() {
+func mais() {
 	// Sert le CSS et autres fichiers statiques
 	fs := http.FileServer(http.Dir("."))
 	http.Handle("/page-Style.css", fs)
 
 	// Sert la page HTML
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "page-web.html")
+		http.ServeFile(w, r, "web test html.html")
 	})
 
 	// Endpoint API pour les artistes
@@ -46,7 +46,7 @@ func maintest() {
 		}
 
 		// Transformation JSON en slice de structs
-		var data []Artist
+		var data []Artisttest
 		if err := json.Unmarshal(body, &data); err != nil {
 			http.Error(w, "Erreur JSON", http.StatusInternalServerError)
 			return

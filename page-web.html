@@ -36,7 +36,40 @@
 <div class="main">
   <h2>TITLE HEADING</h2>
   <h5>Title description, Oct 7, 2025</h5>
-  <div id="api-content" style="padding:10px; border:1px solid #ccc;"></div>
+  <div id="api-content" style="padding:10px; border:1px solid #ccc;">
+  <script>
+  fetch('/api/artists')
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById('api-content');
+      container.innerHTML = ""; // vide la div avant remplissage
+
+      data.forEach(artist => {
+        const div = document.createElement('div');
+        div.style.border = "1px solid #ccc";
+        div.style.margin = "5px";
+        div.style.padding = "5px";
+        div.style.display = "flex";
+        div.style.alignItems = "center";
+        div.style.gap = "10px";
+
+        div.innerHTML = `
+          <img src="${artist.image}" alt="${artist.name}" style="width:50px;height:50px;object-fit:cover;">
+          <div>
+            <strong>${artist.name}</strong><br>
+            Premier album: ${artist.firstAlbum}<br>
+            Création: ${artist.creationDate}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    })
+    .catch(err => {
+      document.getElementById('api-content').textContent = "Erreur de chargement : " + err;
+    });
+  </script>
+
+  </div>
   <p>Some text..</p>
   <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
 
