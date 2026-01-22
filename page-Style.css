@@ -103,8 +103,17 @@ footer {
   text-align: center;
   background: #ddd;
 }
+.api-content {
+  width: 400px;          /* largeur du rectangle */
+  height: 300px;         /* hauteur fixe */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow-y: auto;      /* barre de défilement verticale */
+  padding: 10px;
+  background-color: #f9f9f9;
+}
 
-@media screen and (max-width: 700px) {
+  @media screen and (max-width: 700px) {
   .container, .navbar {   
     flex-direction: column;
   }

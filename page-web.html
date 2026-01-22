@@ -29,23 +29,24 @@
   <div class="side">
     <h2>About Me</h2>
     <h5>Photo of me:</h5>
-    <div class="fakeimg" style="height: 60px;">Image</div><br>
-    <div class="fakeimg" style="height:60px;">Image</div><br>
+    <button onclick="sortArtists()">trie alpha </button><br>
+    <button onclick="sortArtistsByCreationDate()">trie par date de création</button><br>
     <div class="fakeimg" style="height:60px;">Image</div><br>
     <div class="fakeimg" style="height:60px;">Image</div>
   </div>
 <div class="main">
   <h2>TITLE HEADING</h2>
   <h5>Title description, Oct 7, 2025</h5>
-  <div id="api-content" style="padding:10px; border:1px solid #ccc;">
-  <script>
-  fetch('/api/artists')
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById('api-content');
-      container.innerHTML = ""; // vide la div avant remplissage
+  <div id="artist-box">
+    <div id="api-content" style="padding:10px; border:1px solid #ccc;">
+    <script>
+    let allArtists = [];
 
-      data.forEach(artist => {
+    function displayArtists(artists) {
+      const container = document.getElementById('api-content');
+      container.innerHTML = "";
+
+      artists.forEach(artist => {
         const div = document.createElement('div');
         div.style.border = "1px solid #ccc";
         div.style.margin = "5px";
@@ -57,19 +58,37 @@
         div.innerHTML = `
           <img src="${artist.image}" alt="${artist.name}" style="width:50px;height:50px;object-fit:cover;">
           <div>
-            <strong>${artist.name}</strong><br>
+            <strong>${artist.name}</strong><<br>
             Premier album: ${artist.firstAlbum}<br>
             Création: ${artist.creationDate}
           </div>
         `;
         container.appendChild(div);
       });
-    })
-    .catch(err => {
-      document.getElementById('api-content').textContent = "Erreur de chargement : " + err;
-    });
-  </script>
+    }
 
+    function sortArtists() {
+      const sorted = [...allArtists].sort((a, b) => a.name.localeCompare(b.name));
+      displayArtists(sorted);
+    }
+
+    function sortArtistsByCreationDate() {
+      const sorted = [...allArtists].sort((a, b) => a.creationDate - b.creationDate);
+      displayArtists(sorted);
+    }
+
+    fetch('/api/artists')
+      .then(response => response.json())
+      .then(data => {
+        allArtists = data;
+        displayArtists(allArtists);
+      })
+      .catch(err => {
+        document.getElementById('api-content').textContent = "Erreur de chargement : " + err;
+      });
+    </script>
+
+    </div>
   </div>
   <p>Some text..</p>
   <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
