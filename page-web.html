@@ -74,7 +74,11 @@
     }
 
     function premierAlbum() {
-      const sorted = [...allArtists].sort((a,b) => a.firstAlbum.localeCompare(b.firstAlbum)) ;
+      const sorted = [...allArtists].sort((a, b) => {
+      const dateA = new Date(a.firstAlbum.substring(6, 10), a.firstAlbum.substring(3, 5) - 1, a.firstAlbum.substring(0, 2));
+      const dateB = new Date(b.firstAlbum.substring(6, 10), b.firstAlbum.substring(3, 5) - 1, b.firstAlbum.substring(0, 2));
+      return dateA - dateB;
+      });
       displayArtists(sorted);
     }
     function numberMenber() {
