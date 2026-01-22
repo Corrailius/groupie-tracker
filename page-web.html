@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<title>Groupie Tracker</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/page-Style.css">
@@ -9,13 +9,9 @@
 </head>
 
 <body>
-<div style="background:yellow;padding:5px;text-align:center;">
-  <h4>Resize the browser window to see the responsive effect.</h4>
-</div>
-
 <header>
-  <h1>My Website</h1>
-  <p>With a <b>flexible</b> layout.</p>
+  <h1>Groupie Trackers</h1>
+  <p>Liste de 52 artistes majeurs de la musique moderne.</p>
 </header>
 
 <div class="navbar">
@@ -27,16 +23,15 @@
 
 <div class="container">
   <div class="side">
-    <h2>About Me</h2>
-    <h5>Photo of me:</h5>
-    <button onclick="sortArtists()">trie alpha </button><br>
-    <button onclick="sortArtistsByCreationDate()">trie par date de création</button><br>
-    <div class="fakeimg" style="height:60px;">Image</div><br>
-    <div class="fakeimg" style="height:60px;">Image</div>
+    <h2>Trie :</h2>
+    <button onclick="sortArtists()">Ordre Alphabetique </button><br>
+    <button onclick="sortArtistsByCreationDate()">Date de Création</button><br>
+    <button onclick="premierAlbum()">Premier Album</button><br>
+    <button onclick="numberMenber()">Nombre de Membres</button>
   </div>
 <div class="main">
-  <h2>TITLE HEADING</h2>
-  <h5>Title description, Oct 7, 2025</h5>
+  <h2>Liste des artistes</h2>
+  <h5>⚠️ Si les artiste ne s'affichent pas, veuillez rafraîchir la page.</h5>
   <div id="artist-box">
     <div id="api-content" style="padding:10px; border:1px solid #ccc;">
     <script>
@@ -58,9 +53,10 @@
         div.innerHTML = `
           <img src="${artist.image}" alt="${artist.name}" style="width:50px;height:50px;object-fit:cover;">
           <div>
-            <strong>${artist.name}</strong><<br>
+            <strong>${artist.name}</strong><br>
             Premier album: ${artist.firstAlbum}<br>
-            Création: ${artist.creationDate}
+            Création: ${artist.creationDate}<br>
+            Membres: ${artist.members.join(", ")}<br>
           </div>
         `;
         container.appendChild(div);
@@ -76,6 +72,17 @@
       const sorted = [...allArtists].sort((a, b) => a.creationDate - b.creationDate);
       displayArtists(sorted);
     }
+
+    function premierAlbum() {
+      const sorted = [...allArtists].sort((a,b) => a.firstAlbum.localeCompare(b.firstAlbum)) ;
+      displayArtists(sorted);
+    }
+    function numberMenber() {
+      const sorted = [...allArtists].sort((a, b) => b.members.length - a.members.length);
+      displayArtists(sorted);
+    }
+
+
 
     fetch('/api/artists')
       .then(response => response.json())
