@@ -29,95 +29,127 @@
     <button onclick="premierAlbum()">Premier Album</button><br>
     <button onclick="numberMenber()">Nombre de Membres</button>
   </div>
-<div class="main">
-  <h2>Liste des artistes</h2>
-  <h5>⚠️ Si les artiste ne s'affichent pas, veuillez rafraîchir la page.</h5>
-  <div id="artist-box">
-    <div id="api-content" style="padding:10px; border:1px solid #ccc;">
-    <script>
-    let allArtists = [];
 
-    function displayArtists(artists) {
-      const container = document.getElementById('api-content');
-      container.innerHTML = "";
+  <div class="main">
 
-      artists.forEach(artist => {
-        const div = document.createElement('div');
-        div.style.border = "1px solid #ccc";
-        div.style.margin = "5px";
-        div.style.padding = "5px";
-        div.style.display = "flex";
-        div.style.alignItems = "center";
-        div.style.gap = "10px";
+    <!-- 🔍 SEARCH BAR -->
+    <input 
+      type="text"
+      id="search"
+      placeholder="Nom, membre, lieu, date..."
+      autocomplete="off"
+    />
 
-        div.innerHTML = `
-          <img src="${artist.image}" alt="${artist.name}" style="width:50px;height:50px;object-fit:cover;">
-          <div>
-            <strong>${artist.name}</strong><br>
-            Premier album: ${artist.firstAlbum}<br>
-            Création: ${artist.creationDate}<br>
-            Membres: ${artist.members.join(", ")}<br>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
+    <h2>Liste des artistes</h2>
+    <h5>⚠️ Si les artistes ne s'affichent pas, veuillez rafraîchir la page.</h5>
 
-    function sortArtists() {
-      const sorted = [...allArtists].sort((a, b) => a.name.localeCompare(b.name));
-      displayArtists(sorted);
-    }
-
-    function sortArtistsByCreationDate() {
-      const sorted = [...allArtists].sort((a, b) => a.creationDate - b.creationDate);
-      displayArtists(sorted);
-    }
-
-    function premierAlbum() {
-      const sorted = [...allArtists].sort((a, b) => {
-      const dateA = new Date(a.firstAlbum.substring(6, 10), a.firstAlbum.substring(3, 5) - 1, a.firstAlbum.substring(0, 2));
-      const dateB = new Date(b.firstAlbum.substring(6, 10), b.firstAlbum.substring(3, 5) - 1, b.firstAlbum.substring(0, 2));
-      return dateA - dateB;
-      });
-      displayArtists(sorted);
-    }
-    function numberMenber() {
-      const sorted = [...allArtists].sort((a, b) => b.members.length - a.members.length);
-      displayArtists(sorted);
-    }
-
-
-
-    fetch('/api/artists')
-      .then(response => response.json())
-      .then(data => {
-        allArtists = data;
-        displayArtists(allArtists);
-      })
-      .catch(err => {
-        document.getElementById('api-content').textContent = "Erreur de chargement : " + err;
-      });
-    </script>
-
+    <div id="artist-box">
+      <div id="api-content" style="padding:10px; border:1px solid #ccc;"></div>
     </div>
+
+    <script>
+      let allArtists = [];
+
+      function displayArtists(artists) {
+        const container = document.getElementById('api-content');
+        container.innerHTML = "";
+
+        artists.forEach(artist => {
+          const div = document.createElement('div');
+          div.style.border = "1px solid #ccc";
+          div.style.margin = "5px";
+          div.style.padding = "5px";
+          div.style.display = "flex";
+          div.style.alignItems = "center";
+          div.style.gap = "10px";
+
+          div.innerHTML = `
+            <img src="${artist.image}" alt="${artist.name}" style="width:50px;height:50px;object-fit:cover;">
+            <div>
+              <strong>${artist.name}</strong><br>
+              Premier album: ${artist.firstAlbum}<br>
+              Création: ${artist.creationDate}<br>
+              Membres: ${artist.members.join(", ")}<br>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      function sortArtists() {
+        displayArtists([...allArtists].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        ));
+      }
+
+      function sortArtistsByCreationDate() {
+        displayArtists([...allArtists].sort(
+          (a, b) => a.creationDate - b.creationDate
+        ));
+      }
+
+      function premierAlbum() {
+        displayArtists([...allArtists].sort((a, b) => {
+          const dateA = new Date(a.firstAlbum.split("-").reverse().join("-"));
+          const dateB = new Date(b.firstAlbum.split("-").reverse().join("-"));
+          return dateA - dateB;
+        }));
+      }
+
+      function numberMenber() {
+        displayArtists([...allArtists].sort(
+          (a, b) => b.members.length - a.members.length
+        ));
+      }
+
+      /* 🔍 SEARCH MULTI-CHAMPS */
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("search");
+
+        searchInput.addEventListener("input", () => {
+          const query = searchInput.value.toLowerCase();
+
+          const filtered = allArtists.filter(artist => {
+            const searchableText = `
+              ${artist.name}
+              ${artist.members.join(" ")}
+              ${artist.firstAlbum}
+              ${artist.creationDate}
+            `.toLowerCase();
+
+            return searchableText.includes(query);
+          });
+
+          displayArtists(filtered);
+        });
+      });
+
+      /* 📡 FETCH ARTISTS */
+      fetch('/api/artists')
+        .then(response => response.json())
+        .then(data => {
+          allArtists = data;
+          displayArtists(allArtists);
+        })
+        .catch(err => {
+          document.getElementById('api-content').textContent =
+            "Erreur de chargement : " + err;
+        });
+    </script>
+    <p>Some text..</p>
+    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    <br>
   </div>
-  <p>Some text..</p>
-  <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-
-  <br>
-</div>
-
 </div>
 
 <footer>
   <h2>Credit: </h2>
-  <list>
+  <ul>
     <li>evann-g</li>
     <li>shap</li>
     <li>Corrailius</li>
-  </list>
+  </ul>
 </footer>
 
 </body>
-
 </html>
