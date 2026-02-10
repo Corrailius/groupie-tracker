@@ -21,20 +21,22 @@ type Artist struct {
 
 func main() {
 
-	// API
+	fs := http.FileServer(http.Dir("./CSS"))
+	http.Handle("/CSS/", http.StripPrefix("/CSS/", fs))
+
 	http.HandleFunc("/api/artists", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
 		if err != nil {
-			http.Error(w, err.Error(), 500)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer resp.Body.Close()
 
 		var artists []Artist
 		if err := json.NewDecoder(resp.Body).Decode(&artists); err != nil {
-			http.Error(w, "Erreur JSON", 500)
+			http.Error(w, "Erreur JSON", http.StatusInternalServerError)
 			return
 		}
 
@@ -42,6 +44,7 @@ func main() {
 			return artists[i].Name < artists[j].Name
 		})
 
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(artists)
 	})
 
@@ -49,9 +52,6 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "page-web.html")
 	})
-
-	// CSS
-	http.Handle("/page-Style.css", http.FileServer(http.Dir(".")))
 
 	fmt.Println("Serveur sur http://localhost:8080")
 	http.ListenAndServe(":8080", nil)

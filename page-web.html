@@ -1,153 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-<title>Groupie Tracker</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/CSS/page-Style.css">
+  <title>Groupie Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/CSS/base.css">
+  <link rel="stylesheet" href="/CSS/navigation.css">
+  <link rel="stylesheet" href="/CSS/mise-en-page.css">
+  <link rel="stylesheet" href="/CSS/boutons.css">
+  <link rel="stylesheet" href="/CSS/composants.css">
+  <link rel="stylesheet" href="/CSS/responsive.css">
+  <link rel="stylesheet" href="/CSS/credit.css">
+  <link rel="stylesheet" href="/CSS/entete.css">
+  <link rel="stylesheet" href="/CSS/side.css">
 
-</head>
 
 <body>
+
 <header>
   <h1>Groupie Trackers</h1>
   <p>Liste de 52 artistes majeurs de la musique moderne.</p>
 </header>
 
 <div class="navbar">
-  <a href="https://groupietrackers.herokuapp.com/api/artists">Artiste</a>
-  <a href="https://groupietrackers.herokuapp.com/api/locations">locations</a>
-  <a href="https://groupietrackers.herokuapp.com/api/dates">Date</a>
-  <a href="https://groupietrackers.herokuapp.com/api/relation">relation</a>
+  <a href="https://groupietrackers.herokuapp.com/api/artists">Artistes</a>
+  <a href="https://groupietrackers.herokuapp.com/api/locations">Locations</a>
+  <a href="https://groupietrackers.herokuapp.com/api/dates">Dates</a>
+  <a href="https://groupietrackers.herokuapp.com/api/relation">Relations</a>
 </div>
 
 <div class="container">
   <div class="side">
     <h2>Trie :</h2>
-    <button onclick="sortArtists()">Ordre Alphabetique </button><br>
+    <button onclick="sortArtists()">Ordre Alphabétique</button><br>
     <button onclick="sortArtistsByCreationDate()">Date de Création</button><br>
     <button onclick="premierAlbum()">Premier Album</button><br>
-    <button onclick="numberMenber()">Nombre de Membres</button>
+    <button onclick="numberMember()">Nombre de Membres</button>
   </div>
 
   <div class="main">
-
-    <!-- 🔍 SEARCH BAR -->
-    <input 
-      type="text"
-      id="search"
-      placeholder="Nom, membre, lieu, date..."
-      autocomplete="off"
-    />
+    <input type="text" id="search" placeholder="Nom, membre, date..." autocomplete="off">
 
     <h2>Liste des artistes</h2>
-    <h5>⚠️ Si les artistes ne s'affichent pas, veuillez rafraîchir la page.</h5>
+    <h5>⚠️ Si les artistes ne s'affichent pas, rafraîchissez la page.</h5>
 
     <div id="artist-box">
-      <div id="api-content" style="padding:10px; border:1px solid #ccc;"></div>
+      <div id="api-content"></div>
     </div>
-
-    <script>
-      let allArtists = [];
-
-      function displayArtists(artists) {
-        const container = document.getElementById('api-content');
-        container.innerHTML = "";
-
-        artists.forEach(artist => {
-          const div = document.createElement('div');
-          div.style.border = "1px solid #ccc";
-          div.style.margin = "5px";
-          div.style.padding = "5px";
-          div.style.display = "flex";
-          div.style.alignItems = "center";
-          div.style.gap = "10px";
-
-          div.innerHTML = `
-            <img src="${artist.image}" alt="${artist.name}" style="width:50px;height:50px;object-fit:cover;">
-            <div>
-              <strong>${artist.name}</strong><br>
-              Premier album: ${artist.firstAlbum}<br>
-              Création: ${artist.creationDate}<br>
-              Membres: ${artist.members.join(", ")}<br>
-            </div>
-          `;
-          container.appendChild(div);
-        });
-      }
-
-      function sortArtists() {
-        displayArtists([...allArtists].sort((a, b) =>
-          a.name.localeCompare(b.name)
-        ));
-      }
-
-      function sortArtistsByCreationDate() {
-        displayArtists([...allArtists].sort(
-          (a, b) => a.creationDate - b.creationDate
-        ));
-      }
-
-      function premierAlbum() {
-        displayArtists([...allArtists].sort((a, b) => {
-          const dateA = new Date(a.firstAlbum.split("-").reverse().join("-"));
-          const dateB = new Date(b.firstAlbum.split("-").reverse().join("-"));
-          return dateA - dateB;
-        }));
-      }
-
-      function numberMenber() {
-        displayArtists([...allArtists].sort(
-          (a, b) => b.members.length - a.members.length
-        ));
-      }
-
-      /* 🔍 SEARCH MULTI-CHAMPS */
-      document.addEventListener("DOMContentLoaded", () => {
-        const searchInput = document.getElementById("search");
-
-        searchInput.addEventListener("input", () => {
-          const query = searchInput.value.toLowerCase();
-
-          const filtered = allArtists.filter(artist => {
-            const searchableText = `
-              ${artist.name}
-              ${artist.members.join(" ")}
-              ${artist.firstAlbum}
-              ${artist.creationDate}
-            `.toLowerCase();
-
-            return searchableText.includes(query);
-          });
-
-          displayArtists(filtered);
-        });
-      });
-
-      /* 📡 FETCH ARTISTS */
-      fetch('/api/artists')
-        .then(response => response.json())
-        .then(data => {
-          allArtists = data;
-          displayArtists(allArtists);
-        })
-        .catch(err => {
-          document.getElementById('api-content').textContent =
-            "Erreur de chargement : " + err;
-        });
-    </script>
-    <br>
   </div>
 </div>
 
+<template id="artist-template">
+  <div class="artist-card" style="border:1px solid #ccc; margin:5px; padding:10px; display:flex; gap:10px; align-items:center;">
+    <img class="artist-image" src="" alt="" style="width:60px;height:60px;object-fit:cover;">
+    <div class="artist-info">
+      <strong class="artist-name"></strong><br>
+      Premier album : <span class="artist-album"></span><br>
+      Création : <span class="artist-creation"></span><br>
+      Membres : <span class="artist-members"></span>
+    </div>
+  </div>
+</template>
+
 <footer>
-  <h2>Credit: </h2>
+  <h2>Credit :</h2>
   <ul>
     <li>evann-g</li>
     <li>shap</li>
     <li>Corrailius</li>
   </ul>
 </footer>
+
+<script>
+  let allArtists = [];
+
+  function displayArtists(artists) {
+    const container = document.getElementById("api-content");
+    const template = document.getElementById("artist-template");
+    container.innerHTML = "";
+    artists.forEach(artist => {
+      const clone = template.content.cloneNode(true);
+      clone.querySelector(".artist-image").src = artist.image;
+      clone.querySelector(".artist-image").alt = artist.name;
+      clone.querySelector(".artist-name").textContent = artist.name;
+      clone.querySelector(".artist-album").textContent = artist.firstAlbum;
+      clone.querySelector(".artist-creation").textContent = artist.creationDate;
+      clone.querySelector(".artist-members").textContent = artist.members.join(", ");
+      container.appendChild(clone);
+    });
+  }
+
+  function sortArtists() {
+    displayArtists([...allArtists].sort((a, b) => a.name.localeCompare(b.name)));
+  }
+
+  function sortArtistsByCreationDate() {
+    displayArtists([...allArtists].sort((a, b) => a.creationDate - b.creationDate));
+  }
+
+  function premierAlbum() {
+    displayArtists([...allArtists].sort((a, b) => {
+      const dateA = new Date(a.firstAlbum.split("-").reverse().join("-"));
+      const dateB = new Date(b.firstAlbum.split("-").reverse().join("-"));
+      return dateA - dateB;
+    }));
+  }
+
+  function numberMember() {
+    displayArtists([...allArtists].sort((a, b) => b.members.length - a.members.length));
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search");
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = allArtists.filter(artist => {
+        const text = `${artist.name} ${artist.members.join(" ")} ${artist.firstAlbum} ${artist.creationDate}`.toLowerCase();
+        return text.includes(query);
+      });
+      displayArtists(filtered);
+    });
+  });
+
+  fetch("/api/artists")
+    .then(response => response.json())
+    .then(data => {
+      allArtists = data;
+      displayArtists(allArtists);
+    })
+    .catch(err => {
+      document.getElementById("api-content").textContent = "Erreur de chargement : " + err;
+    });
+</script>
 
 </body>
 </html>

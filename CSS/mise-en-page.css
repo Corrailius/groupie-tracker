@@ -1,0 +1,29 @@
+.main {
+  flex: 70%;
+  background-color: rgb(24, 26, 27);
+  color: rgb(255, 255, 255);
+  padding: 20px;
+}
+
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background: #333;
+}
+
+.menu li {
+  position: relative;
+}
+
+.menu a {
+  display: block;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  background: #555;
+}
