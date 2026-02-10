@@ -10,8 +10,8 @@ body {
 header {
   padding: 60px;
   text-align: center;
-  background: #1abc9c;
-  color: white;
+  background: #1abcb1;
+  color: rgb(3, 1, 1);
 }
 
 .navbar {
@@ -38,13 +38,15 @@ header {
 
 .side {
   flex: 30%;
-  background-color: #f1f1f1;
+  background-color: rgb(32, 35, 36);
+  color: rgb(232, 230, 227);
   padding: 20px;
 }
 
 .main {
   flex: 70%;
-  background-color: white;
+  background-color: rgb(24, 26, 27);
+  color: rgb(255, 255, 255);
   padding: 20px;
 }
 
@@ -69,6 +71,33 @@ header {
 
 .menu a:hover {
   background: #555;
+}
+
+.side button {
+  width: 100%;
+  padding: 10px 10px;
+  margin: 8px 0;
+
+  background-color: #383636;
+  color: white;
+  border: none;
+  border-radius: 6px;
+
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Effet au survol */
+.side button:hover {
+  background-color: rgb(26, 188, 177);
+  transform: translateY(-2px);
+}
+
+/* Effet au clic */
+.side button:active {
+  transform: translateY(0);
+  background-color: rgb(26, 188, 177);
 }
 
 .dropdown-menu {
@@ -101,7 +130,8 @@ header {
 footer {
   padding: 20px;
   text-align: center;
-  background: #ddd;
+  background: #191919;
+  color : white;
 }
 .api-content {
   width: 400px;          /* largeur du rectangle */
